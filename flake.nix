@@ -17,6 +17,10 @@
 
           python3
           python3Packages.virtualenv
+
+          docker-compose
+          flyway
+          postgresql
         ];
       };
     });
