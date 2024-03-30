@@ -16,12 +16,12 @@
           git
 
           python3
-          python3Packages.virtualenv
 
           docker-compose
           flyway
           postgresql
         ];
+        LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
       };
     });
 }
