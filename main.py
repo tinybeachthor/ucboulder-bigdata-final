@@ -3,6 +3,7 @@ import sys
 
 from apps.collect import collect
 from apps.process import process
+from apps.web import app
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

@@ -6,7 +6,7 @@ def process_arxiv(ch, method, properties, body):
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 
-def process()
+def process():
     ARXIV_QUEUE_NAME = "arxiv"
 
     queue_url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
