@@ -27,7 +27,7 @@ def pull_arxiv(client, channel, queue):
         channel.basic_publish(exchange='', routing_key=queue, body=body)
 
 
-def main():
+def collect():
     ARXIV_QUEUE_NAME = "arxiv"
 
     queue_url = os.environ.get('CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')

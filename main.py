@@ -1,7 +1,8 @@
 import argparse
 import sys
 
-from apps.collect import main as collect
+from apps.collect import collect
+from apps.process import process
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -11,6 +12,8 @@ if __name__ == '__main__':
 
     if args.command == "collect":
         collect()
+    elif args.command == "process":
+        process()
     else:
         print(f"Unknown command: {args.command}")
         sys.exit(1)
