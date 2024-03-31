@@ -18,3 +18,12 @@ def test_json_encode():
     expected += '}'
 
     assert j == expected
+
+def test_json():
+    d = datetime.now().replace(microsecond=0)
+
+    a = Article("i", d, "t", ["a", "aa"], "s")
+    j = a.toJSON()
+    b = Article.fromJSON(j)
+
+    assert b == a

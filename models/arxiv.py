@@ -16,3 +16,11 @@ class Article:
         d['published'] = self.published.isoformat(timespec='seconds')
         j = json.dumps(d)
         return j
+
+    def fromJSON(j):
+        d = json.loads(j)
+        published = datetime.fromisoformat(d['published'])
+
+        a = Article(d['id'], published, d['title'], d['authors'], d['summary'])
+
+        return a
