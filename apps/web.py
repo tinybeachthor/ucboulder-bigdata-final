@@ -1,16 +1,12 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
+import os
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, root_path=os.getcwd())
 
     @app.route("/")
-    def main():
-        return '''
-        <form action="/echo_user_input" method="POST">
-            <input name="user_input">
-            <input type="submit" value="Submit!">
-        </form>
-        '''
+    def index():
+        return render_template('index.html')
 
     @app.route("/echo_user_input", methods=["POST"])
     def echo_input():
