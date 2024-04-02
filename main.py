@@ -4,7 +4,7 @@ import logging
 
 from apps.collect import collect
 from apps.process import process
-from apps.web import app
+from apps.web import create_app
 
 log = logging.getLogger(__name__)
 
@@ -26,3 +26,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     log.info('finished')
+
+else:
+    app = create_app()
