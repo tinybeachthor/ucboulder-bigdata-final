@@ -1,11 +1,15 @@
 from flask import Flask, request, render_template
+from prometheus_client import Counter, generate_latest
 import os
+
+index_view_metric = Counter('index', 'GET index')
 
 def create_app():
     app = Flask(__name__, root_path=os.getcwd())
 
     @app.route("/")
     def index():
+        index_view_metric.inc()
         return render_template('index.html')
 
     @app.route("/echo_user_input", methods=["POST"])
@@ -16,5 +20,8 @@ def create_app():
     @app.route("/healthz")
     def healthz():
         return 'ok'
+    @app.route("/metrics")
+    def metrics():
+        return generate_latest()
 
     return app
