@@ -4,26 +4,15 @@ import pika
 import psycopg
 
 from models.arxiv import Article as ArxivArticle
+from components.database import insert_arxiv
 
 def process_arxiv(ch, method, properties, body, args):
     article = ArxivArticle.fromJSON(body.decode())
     print(article.id)
 
-    aid = article.id
-    published = article.published
-    title = article.title
-    authors = "; ".join(article.authors)
-    summary = article.summary
-
     conn = args
     with conn.cursor() as cur:
-
-        cur.execute(
-            "insert into ARXIV (id, published, title, authors, summary) \
-             values (%s, %s, %s, %s, %s) \
-             on conflict do nothing",
-            (aid, published, title, authors, summary))
-
+        insert_arxiv(cur, article)
         conn.commit()
 
     ch.basic_ack(delivery_tag = method.delivery_tag)

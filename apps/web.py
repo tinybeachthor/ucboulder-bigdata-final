@@ -3,6 +3,8 @@ from prometheus_client import Counter, generate_latest
 import os
 import psycopg
 
+from components.database import get_arxiv_latest
+
 index_view_metric = Counter('index', 'GET index')
 
 def create_app():
@@ -17,15 +19,11 @@ def create_app():
 
         with psycopg.connect(database_url) as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    "select * from ARXIV \
-                        order by published desc \
-                        limit 10")
-                rows = cur.fetchall()
+                articles = get_arxiv_latest(cur)
 
-                print(rows)
+        print(articles)
 
-            response = render_template('index.html')
+        response = render_template('index.html')
 
         return response
 
