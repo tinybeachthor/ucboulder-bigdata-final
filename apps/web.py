@@ -1,16 +1,33 @@
 from flask import Flask, request, render_template
 from prometheus_client import Counter, generate_latest
 import os
+import psycopg
 
 index_view_metric = Counter('index', 'GET index')
 
 def create_app():
+    database_url = os.environ.get(
+        'DATABASE_URL', 'postgresql://guest:guest@localhost:5432/content')
+
     app = Flask(__name__, root_path=os.getcwd())
 
     @app.route("/")
     def index():
         index_view_metric.inc()
-        return render_template('index.html')
+
+        with psycopg.connect(database_url) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "select * from ARXIV \
+                        order by published desc \
+                        limit 10")
+                rows = cur.fetchall()
+
+                print(rows)
+
+            response = render_template('index.html')
+
+        return response
 
     @app.route("/echo_user_input", methods=["POST"])
     def echo_input():
