@@ -2,6 +2,7 @@ from dataclasses import dataclass, asdict
 from typing import List
 from datetime import datetime
 import json
+from enum import StrEnum
 
 @dataclass
 class Article:
@@ -20,7 +21,5 @@ class Article:
     def fromJSON(j):
         d = json.loads(j)
         published = datetime.fromisoformat(d['published'])
-
         a = Article(d['id'], published, d['title'], d['authors'], d['summary'])
-
         return a
