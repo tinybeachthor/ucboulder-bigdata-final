@@ -21,6 +21,7 @@
           docker-compose
           flyway
           postgresql
+          awscli
 
           zlib
         ];

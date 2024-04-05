@@ -1,7 +1,9 @@
 version: '3'
 
 volumes:
+
   prometheus_data:
+  s3_data:
 
 services:
 
@@ -25,6 +27,19 @@ services:
     volumes:
       - ./.docker-data/.rabbit-data:/var/lib/rabbitmq/
       - ./.docker-data/.rabbit-log:/var/log/rabbitmq/
+
+  s3:
+    image: localstack/localstack
+    container_name: s3
+    ports:
+      - '4566:4566'
+    environment:
+      SERVICES: s3
+      AWS_DEFAULT_REGION: us-west-1
+      PERSISTENCE: 1
+    volumes:
+      - s3_data:/var/lib/localstack
+      - ./databases/s3:/etc/localstack/
 
   prometheus:
     image: prom/prometheus
