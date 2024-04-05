@@ -21,8 +21,13 @@
           docker-compose
           flyway
           postgresql
+
+          zlib
         ];
-        LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
+        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
+          stdenv.cc.cc.lib
+          zlib
+        ]);
       };
     });
 }
