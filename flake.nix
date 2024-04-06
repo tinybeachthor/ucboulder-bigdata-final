@@ -24,6 +24,10 @@
           awscli
 
           zlib
+
+          mdbook
+          mdbook-pdf
+          mdbook-toc
         ];
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
           stdenv.cc.cc.lib

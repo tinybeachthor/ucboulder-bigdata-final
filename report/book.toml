@@ -1,0 +1,18 @@
+[book]
+authors = ["Martin Toman"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Report"
+
+[preprocessor.toc]
+command = "mdbook-toc"
+renderer = ["html", "pdf"]
+
+[output.html]
+
+[output.html.print]
+enable = true
+
+[output.pdf]
+
