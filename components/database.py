@@ -21,7 +21,7 @@ def get_arxiv_latest(cur, limit=10):
         "select * from ARXIV \
             order by published desc \
             limit %s",
-            (limit))
+            (limit,))
     rows = cur.fetchall()
 
     articles = []

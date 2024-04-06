@@ -60,4 +60,4 @@ def test_get_arxiv_latest_limit():
 
     get_arxiv_latest(mock_cur, limit=42)
 
-    assert mock_cur.execute_args[1] == 42
+    assert mock_cur.execute_args[1][0] == 42
