@@ -8,13 +8,13 @@ import urllib.parse
 
 from models.arxiv import Article as ArxivArticle
 from components.database import exists_arxiv, insert_arxiv
-from components.text import split_sentences
+from components.text import TextUtil
 from components.text2speech import MockTTS
 
 log = logging.getLogger(__name__)
 
 def process_arxiv(ch, method, properties, body, args):
-    conn, production, dirpath, tts = args
+    conn, production, dirpath, text_util, tts = args
 
     # parse
     try:
@@ -34,7 +34,7 @@ def process_arxiv(ch, method, properties, body, args):
 
     # text2speech
     try:
-        sentences = split_sentences(article.summary)
+        sentences = text_util.split_sentences(article.summary)
         # in dev, only use title to keep processing time low
         if production:
             sentences = [article.title] + sentences
@@ -73,6 +73,7 @@ def process(production=False):
     # Setup
     log.info('setup start')
 
+    text_util = TextUtil()
     tts = MockTTS()
 
     params = pika.URLParameters(queue_url)
@@ -90,7 +91,7 @@ def process(production=False):
     with psycopg.connect(database_url) as conn:
 
         # Execute
-        args = (conn, production, WORK_DIR, tts)
+        args = (conn, production, WORK_DIR, text_util, tts)
         callback = functools.partial(process_arxiv, args=args)
         channel.basic_consume(ARXIV_QUEUE_NAME, callback, auto_ack=False)
 
