@@ -21,9 +21,7 @@ def create_app():
             with conn.cursor() as cur:
                 articles = get_arxiv_latest(cur)
 
-        print(articles)
-
-        response = render_template('index.html')
+        response = render_template('index.html', articles=articles)
 
         return response
 

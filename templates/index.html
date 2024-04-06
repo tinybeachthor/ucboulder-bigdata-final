@@ -8,12 +8,19 @@
 </head>
 <body>
 
-  <h1>Hello World!</h1>
-
-  <form action="/echo_user_input" method="POST">
-      <input name="user_input">
-      <input type="submit" value="Submit!">
-  </form>
+  {% for article in articles %}
+  <article>
+    <h2>{{ article.title }}</h2>
+    <div class="authors">
+      {% for author in article.authors %}
+      <span>{{ author }};</span>
+      {% endfor %}
+    </div>
+    <div class="summary">
+      {{ article.summary }}
+    </div>
+  </article>
+  {% endfor %}
 
 </body>
 </html>
