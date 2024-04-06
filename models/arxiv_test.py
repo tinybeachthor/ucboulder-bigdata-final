@@ -27,3 +27,9 @@ def test_json():
     b = Article.fromJSON(j)
 
     assert b == a
+
+def test_safe_id():
+    d = datetime.now().replace(microsecond=0)
+    a = Article("arxiv/id/url", d, "t", ["a", "aa"], "s")
+    assert 'arxiv' in a.safe_id()
+    assert '/' not in a.safe_id()

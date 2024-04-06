@@ -4,7 +4,6 @@ import functools
 import pika
 import psycopg
 import logging
-import urllib.parse
 
 from models.arxiv import Article as ArxivArticle
 from components.database import exists_arxiv, insert_arxiv
@@ -40,7 +39,7 @@ def process_arxiv(ch, method, properties, body, args):
             sentences = [article.title] + sentences
         else:
             sentences = [article.title]
-        filepath = dirpath / urllib.parse.quote(article.id, safe='')
+        filepath = dirpath / article.safe_id()
         tts.generate(sentences, filepath)
 
     except Exception as e:

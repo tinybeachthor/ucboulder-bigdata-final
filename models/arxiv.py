@@ -3,6 +3,7 @@ from typing import List
 from datetime import datetime
 import json
 from enum import StrEnum
+import urllib.parse
 
 @dataclass
 class Article:
@@ -23,3 +24,6 @@ class Article:
         published = datetime.fromisoformat(d['published'])
         a = Article(d['id'], published, d['title'], d['authors'], d['summary'])
         return a
+
+    def safe_id(self):
+        return urllib.parse.quote(self.id, safe='')
