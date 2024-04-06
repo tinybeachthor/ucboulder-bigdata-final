@@ -1,16 +1,20 @@
 import os
+from pathlib import Path
 import functools
 import pika
 import psycopg
 import logging
+import urllib.parse
 
 from models.arxiv import Article as ArxivArticle
 from components.database import exists_arxiv, insert_arxiv
+from components.text import split_sentences
+from components.text2speech import MockTTS
 
 log = logging.getLogger(__name__)
 
 def process_arxiv(ch, method, properties, body, args):
-    conn, production = args
+    conn, production, dirpath, tts = args
 
     # parse
     try:
@@ -29,6 +33,20 @@ def process_arxiv(ch, method, properties, body, args):
             return
 
     # text2speech
+    try:
+        sentences = split_sentences(article.summary)
+        # in dev, only use title to keep processing time low
+        if production:
+            sentences = [article.title] + sentences
+        else:
+            sentences = [article.title]
+        filepath = dirpath / urllib.parse.quote(article.id, safe='')
+        tts.generate(sentences, filepath)
+
+    except Exception as e:
+        log.warn(e)
+        ch.basic_ack(delivery_tag = method.delivery_tag)
+        return
 
     # upload audio to object store
 
@@ -43,6 +61,9 @@ def process_arxiv(ch, method, properties, body, args):
 
 def process(production=False):
     ARXIV_QUEUE_NAME = "arxiv"
+    WORK_DIR = Path(os.getcwd()) / ".tmp" / "process"
+
+    os.makedirs(WORK_DIR, exist_ok=True)
 
     queue_url = os.environ.get(
         'CLOUDAMQP_URL', 'amqp://guest:guest@localhost:5672/%2f')
@@ -51,6 +72,8 @@ def process(production=False):
 
     # Setup
     log.info('setup start')
+
+    tts = MockTTS()
 
     params = pika.URLParameters(queue_url)
     connection = pika.BlockingConnection(params)
@@ -67,7 +90,8 @@ def process(production=False):
     with psycopg.connect(database_url) as conn:
 
         # Execute
-        callback = functools.partial(process_arxiv, args=(conn, production))
+        args = (conn, production, WORK_DIR, tts)
+        callback = functools.partial(process_arxiv, args=args)
         channel.basic_consume(ARXIV_QUEUE_NAME, callback, auto_ack=False)
 
         channel.start_consuming()

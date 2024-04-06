@@ -4,6 +4,7 @@ result
 /venv
 __pycache__
 .docker-data/
+.tmp
 
 /report.json
 /report.html
