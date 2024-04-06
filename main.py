@@ -1,3 +1,4 @@
+import os
 import argparse
 import sys
 import logging
@@ -6,11 +7,19 @@ from apps.collect import collect
 from apps.process import process
 from apps.web import create_app
 
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
+log.info('started')
+
+if os.environ.get('ENV', 'dev') == 'production':
+    production = True
+    log.info("running in production")
+else:
+    production = False
+    log.warn("RUNNING IN DEV MODE. YOU SHOULD NOT SEE THIS IS PRODUCTION.")
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
-    log.info('started')
+    log.info('running as entrypoint')
 
     parser = argparse.ArgumentParser()
     parser.add_argument("command")
@@ -20,7 +29,7 @@ if __name__ == '__main__':
     if args.command == "collect":
         collect()
     elif args.command == "process":
-        process()
+        process(production=production)
     else:
         print(f"Unknown command: {args.command}")
         sys.exit(1)
@@ -28,4 +37,6 @@ if __name__ == '__main__':
     log.info('finished')
 
 else:
+    log.info('running as module')
+
     app = create_app()
