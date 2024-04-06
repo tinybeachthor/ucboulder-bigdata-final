@@ -10,10 +10,44 @@ Audio arXiv - papers as a podcast
 
 ## Setup
 
-1. Create python virtual env: `python -m venv venv`
-2. Install dependencies: `pip install -r requirements.txt`
-3. Setup infrastructure: `docker-compose up`
-4. Setup databases: `make setup`
-5. Run data processor: `python main.py process`
-6. Run data collector: `python main.py collect`
-7. Start the webapp: `flask --app main.py run`
+### Setup python environment
+
+Create python `venv`. Install runtime dependencies. Install test
+dependencies.
+
+```sh
+python -m venv venv
+pip install -r requirements.txt
+pip install pytest
+```
+
+### Setup development infrastructure
+
+Spin up the dockerized infrastructure. Setup database tables using `flyway`.
+
+```sh
+docker compose up
+make setup
+```
+
+### Run the app
+
+Run the data collector. This is a job that will pull the latest articles
+from arxiv API and push them to a work queue, then exit.
+
+```sh
+python main.py collect
+```
+
+Run the data processor worker. Get item from work queue, run text2speech,
+push the audio to object storage, insert article info to database.
+
+```sh
+python main.py process
+```
+
+Run the web app + API server.
+
+```sh
+flask --app main.py run
+```
