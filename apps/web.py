@@ -1,11 +1,12 @@
 from flask import Flask, request, render_template
-from prometheus_client import Counter, generate_latest
+from prometheus_client import Counter, Summary, generate_latest
 import os
 import psycopg
 
 from components.database import get_arxiv_latest
 
 index_view_metric = Counter('index', 'GET index')
+index_duration = Summary('index_duration', 'GET index duration')
 
 def create_app():
     database_url = os.environ.get(
@@ -14,6 +15,7 @@ def create_app():
     app = Flask(__name__, root_path=os.getcwd())
 
     @app.route("/")
+    @index_duration.time()
     def index():
         index_view_metric.inc()
 
