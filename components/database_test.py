@@ -1,7 +1,31 @@
 from datetime import datetime
 
 from models.arxiv import Article
-from .database import insert_arxiv, get_arxiv_latest
+from .database import exists_arxiv, insert_arxiv, get_arxiv_latest
+
+def test_exists_arxiv():
+    class MockCursor:
+        def __init__(self, return_val):
+            self.return_val = return_val
+        def execute(self, *args):
+            self.execute_args = args
+        def fetchone(self):
+            return self.return_val
+
+    mock_cur = MockCursor("row")
+    assert exists_arxiv(mock_cur, "id")
+
+def test_exists_arxiv_none():
+    class MockCursor:
+        def __init__(self, return_val):
+            self.return_val = return_val
+        def execute(self, *args):
+            self.execute_args = args
+        def fetchone(self):
+            return self.return_val
+
+    mock_cur = MockCursor(None)
+    assert not exists_arxiv(mock_cur, "id")
 
 def test_insert_arxiv():
     class MockCursor:

@@ -5,29 +5,43 @@ import psycopg
 import logging
 
 from models.arxiv import Article as ArxivArticle
-from components.database import insert_arxiv
+from components.database import exists_arxiv, insert_arxiv
 
 log = logging.getLogger(__name__)
 
 def process_arxiv(ch, method, properties, body, args):
+    conn, production = args
+
+    # parse
     try:
         article = ArxivArticle.fromJSON(body.decode())
-        log.info('process_arxiv', article.id)
+        log.info(f'process_arxiv {article.id}')
     except Exception as e:
         log.warn(e)
         ch.basic_ack(delivery_tag = method.delivery_tag)
         return
 
-    conn = args
+    # check if already exists in database
+    with conn.cursor() as cur:
+        if exists_arxiv(cur, article.id):
+            log.info(f'already in database {article.id}')
+            ch.basic_ack(delivery_tag = method.delivery_tag)
+            return
+
+    # text2speech
+
+    # upload audio to object store
+
+    # insert to database
     with conn.cursor() as cur:
         insert_arxiv(cur, article)
         conn.commit()
 
-    log.info('process_arxiv done', article.id)
+    log.info(f'process_arxiv done {article.id}')
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 
-def process():
+def process(production=False):
     ARXIV_QUEUE_NAME = "arxiv"
 
     queue_url = os.environ.get(
@@ -53,7 +67,7 @@ def process():
     with psycopg.connect(database_url) as conn:
 
         # Execute
-        callback = functools.partial(process_arxiv, args=(conn))
+        callback = functools.partial(process_arxiv, args=(conn, production))
         channel.basic_consume(ARXIV_QUEUE_NAME, callback, auto_ack=False)
 
         channel.start_consuming()

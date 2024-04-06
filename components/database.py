@@ -3,6 +3,13 @@ from models.arxiv import Article as ArxivArticle
 
 log = logging.getLogger(__name__)
 
+def exists_arxiv(cur, article_id):
+    cur.execute(
+        "select id from ARXIV \
+            where id = %s",
+        (article_id,))
+    return cur.fetchone() is not None
+
 def insert_arxiv(cur, article):
     aid = article.id
     published = article.published
