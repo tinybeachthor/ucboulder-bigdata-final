@@ -44,7 +44,7 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yaml'
     volumes:
-      - ./metrics/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - ./config/metrics/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
       - ./.docker-data/.prometheus:/prometheus
 
   grafana:
@@ -56,4 +56,4 @@ services:
       GF_SECURITY_ADMIN_USER: 'guest'
       GF_SECURITY_ADMIN_PASSWORD: 'guest'
     volumes:
-      - ./metrics/grafana:/etc/grafana/provisioning/datasources
+      - ./config/metrics/grafana:/etc/grafana/provisioning/datasources
