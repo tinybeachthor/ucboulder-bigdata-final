@@ -43,6 +43,6 @@ def get_arxiv_latest(cur, limit=10):
                 row[4])
             articles.append(article)
         except Exception as e:
-            log.warn(e)
+            log.warning(e)
 
     return articles

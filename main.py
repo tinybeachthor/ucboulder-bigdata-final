@@ -16,7 +16,7 @@ if os.environ.get('ENV', 'dev') == 'production':
     log.info("running in production")
 else:
     production = False
-    log.warn("RUNNING IN DEV MODE. YOU SHOULD NOT SEE THIS IS PRODUCTION.")
+    log.warning("RUNNING IN DEV MODE. YOU SHOULD NOT SEE THIS IS PRODUCTION.")
 
 if __name__ == '__main__':
     log.info('running as entrypoint')

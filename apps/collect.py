@@ -28,7 +28,7 @@ def pull_arxiv(client, channel, queue):
             authors = list(map(str, r.authors))
             article = ArxivArticle(r.entry_id, published, r.title, authors, r.summary)
         except Exception as e:
-            log.warn(e)
+            log.warning(e)
             continue
 
         try:
@@ -36,7 +36,7 @@ def pull_arxiv(client, channel, queue):
             channel.basic_publish(exchange='', routing_key=queue, body=body)
             log.info(f'queued article {r.entry_id}')
         except Exception as e:
-            log.warn(e)
+            log.warning(e)
             continue
 
 

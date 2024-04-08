@@ -22,7 +22,7 @@ def process_arxiv(ch, method, properties, body, args):
         article = ArxivArticle.fromJSON(body.decode())
         log.info(f'process_arxiv {article.id}')
     except Exception as e:
-        log.warn(e)
+        log.warning(e)
         ch.basic_ack(delivery_tag = method.delivery_tag)
         return
 
@@ -48,7 +48,7 @@ def process_arxiv(ch, method, properties, body, args):
             tts.generate(sentences, filepath)
 
         except Exception as e:
-            log.warn(e)
+            log.warning(e)
             ch.basic_ack(delivery_tag = method.delivery_tag)
             return
 
