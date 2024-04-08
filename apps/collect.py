@@ -14,7 +14,7 @@ def pull_arxiv(client, channel, queue):
 
     # Search for recent articles
     search = arxiv.Search(
-        query="cat:cs.AI",
+        query="cat:cs.CC",
         max_results = 5,
         sort_by = arxiv.SortCriterion.SubmittedDate,
     )

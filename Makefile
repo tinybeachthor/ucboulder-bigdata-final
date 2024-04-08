@@ -18,3 +18,7 @@ db_content_clean:
 	-url="jdbc:postgresql://localhost:5432/content" \
 	-locations=filesystem:databases/content \
 	clean
+
+clean:
+	rm -rf .docker-data
+	rm -rf .tmp
