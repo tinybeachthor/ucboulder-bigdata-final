@@ -52,3 +52,25 @@ Run the web app + API server.
 ```sh
 flask --app main.py run
 ```
+
+## Testing
+
+All tests are run using `pytest`.
+Tests are automatically discovered by the test runner.
+
+```sh
+pytest
+```
+
+### Unit
+
+Unit tests are co-located next to the file being tested.
+Test files have a `_test.py` suffix.
+For example: `database.py` has unit tests in `database_test.py` in the
+same directory.
+
+### Integration
+
+They are located in the `/integration` directory under the root of the
+repository.
+All integration tests are in this directory.
