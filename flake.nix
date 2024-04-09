@@ -17,6 +17,7 @@
           gnumake
 
           python3
+          heroku
 
           docker-compose
           flyway
