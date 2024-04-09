@@ -10,7 +10,7 @@ from botocore.exceptions import ClientError
 from models.arxiv import Article as ArxivArticle
 from components.database import exists_arxiv, insert_arxiv
 from components.text import TextUtil
-from components.text2speech import MockTTS
+from components.text2speech import TTS
 
 log = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ def process_arxiv(ch, method, properties, body, args):
             return
 
     # text2speech
-    filename = article.safe_id() + ".wav"
+    filename = article.safe_id() + ".mp3"
     filepath = dirpath / filename
 
     if not os.path.exists(filepath):
@@ -92,7 +92,7 @@ def process(production=False):
     log.info('setup start')
 
     text_util = TextUtil()
-    tts = MockTTS()
+    tts = TTS()
 
     s3 = boto3.client(
             service_name = "s3",

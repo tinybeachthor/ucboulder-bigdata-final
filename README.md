@@ -6,7 +6,7 @@ Audio arXiv - papers as a podcast
 ## Overview
 
 1. Pull new computer science papers from arXiv
-2. Run text2speech using bark on them
+2. Synthesize speech from the text
 3. Present as a website with the option to play the audio
 
 ## Setup
