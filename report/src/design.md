@@ -1,4 +1,5 @@
 # Design choices
+
 <!-- toc -->
 
 ## Data stores
