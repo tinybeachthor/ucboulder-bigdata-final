@@ -11,6 +11,8 @@ index_duration = Summary('index_duration', 'GET index duration')
 def create_app():
     database_url = os.environ.get(
         'DATABASE_URL', 'postgresql://guest:guest@localhost:5432/content')
+    audio_url_root = os.environ.get(
+        'AUDIO_URL_ROOT', 'http://localhost:4566/objects/')
 
     app = Flask(__name__, root_path=os.getcwd())
 
@@ -23,7 +25,10 @@ def create_app():
             with conn.cursor() as cur:
                 articles = get_arxiv_latest(cur)
 
-        response = render_template('index.html', articles=articles)
+        response = render_template(
+                'index.html',
+                AUDIO_URL_ROOT = audio_url_root,
+                articles = articles)
 
         return response
 

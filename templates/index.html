@@ -10,6 +10,9 @@
 
   {% for article in articles %}
   <article>
+    <figure>
+      <audio controls src="{{AUDIO_URL_ROOT}}{{article.safe_id()}}.wav"></audio>
+    </figure>
     <h2>{{ article.title }}</h2>
     <div class="authors">
       {% for author in article.authors %}

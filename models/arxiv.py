@@ -3,7 +3,6 @@ from typing import List
 from datetime import datetime
 import json
 from enum import StrEnum
-import urllib.parse
 
 @dataclass
 class Article:
@@ -26,4 +25,4 @@ class Article:
         return a
 
     def safe_id(self):
-        return urllib.parse.quote(self.id, safe='')
+        return "".join([ c if c.isalnum() else "_" for c in self.id ])
