@@ -27,7 +27,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.command == "collect":
-        collect()
+        collect(production=production)
     elif args.command == "process":
         process(production=production)
     else:

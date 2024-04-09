@@ -27,8 +27,10 @@ def test_empty():
     mock_client = MockClient([])
     mock_channel = MockChannel()
     queue = "test_arxiv"
+    cat = "cs.AI"
+    now = datetime.now().replace(microsecond=0).astimezone(tz.UTC)
 
-    pull_arxiv(mock_client, mock_channel, queue)
+    pull_arxiv(mock_client, mock_channel, queue, cat, now)
 
     assert len(mock_channel.basic_publish_args) == 0
 
@@ -45,8 +47,9 @@ def test_single():
     mock_client = MockClient([article_raw])
     mock_channel = MockChannel()
     queue = "test_arxiv"
+    cat = "cs.AI"
 
-    pull_arxiv(mock_client, mock_channel, queue)
+    pull_arxiv(mock_client, mock_channel, queue, cat, dt)
 
     assert len(mock_channel.basic_publish_args) == 1
     assert mock_channel.basic_publish_args[0]['routing_key'] == queue
@@ -66,8 +69,9 @@ def test_multiple():
     mock_client = MockClient([article_raw, article_raw])
     mock_channel = MockChannel()
     queue = "test_arxiv"
+    cat = "cs.AI"
 
-    pull_arxiv(mock_client, mock_channel, queue)
+    pull_arxiv(mock_client, mock_channel, queue, cat, dt)
 
     assert len(mock_channel.basic_publish_args) == 2
     assert mock_channel.basic_publish_args[0]['routing_key'] == queue
@@ -76,3 +80,23 @@ def test_multiple():
     assert mock_channel.basic_publish_args[1]['routing_key'] == queue
     assert mock_channel.basic_publish_args[1]['exchange'] == ''
     assert mock_channel.basic_publish_args[1]['body'] == article.toJSON()
+
+def test_old():
+    now = datetime.now().replace(microsecond=0).astimezone(tz.UTC)
+    dt = now.replace(year=1999)
+    article = Article("i", dt, "t", ["a", "aa"], "s")
+    article_raw = Result(
+        article.id,
+        published = article.published,
+        title = article.title,
+        summary = article.summary,
+        authors = list(map(Result.Author, article.authors)))
+
+    mock_client = MockClient([article_raw, article_raw])
+    mock_channel = MockChannel()
+    queue = "test_arxiv"
+    cat = "cs.AI"
+
+    pull_arxiv(mock_client, mock_channel, queue, cat, now)
+
+    assert len(mock_channel.basic_publish_args) == 0
