@@ -1,0 +1,10 @@
+setup: dbs_migrate
+
+dbs_migrate: db_content_migrate
+
+db_content_migrate:
+	flyway \
+	-user=$$DB_USER -password=$$DB_PASSWORD \
+	-url="jdbc:postgresql://$$DB_HOST:$$DB_PORT/$$DB_NAME" \
+	-locations=filesystem:databases/content \
+	migrate
