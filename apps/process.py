@@ -14,8 +14,31 @@ from components.text2speech import TTS
 
 log = logging.getLogger(__name__)
 
+def tts_upload(article,
+               tts = TTS(), text_util = TextUtil(), workdir = os.getcwd(),
+               production = True, s3 = None, s3_bucket = None):
+
+    filename = article.safe_id() + ".mp3"
+    filepath = workdir / filename
+
+    sentences = text_util.split_sentences(article.summary)
+    # in dev, only use title to keep processing time low
+    if production:
+        sentences = [article.title] + sentences
+    else:
+        sentences = [article.title]
+
+    tts.generate(sentences, filepath)
+
+    # upload audio to object store
+    if s3:
+        s3.upload_file(filepath, s3_bucket, filename)
+
+    return filepath
+
+
 def process_arxiv(ch, method, properties, body, args):
-    conn, production, dirpath, text_util, tts, s3, s3_bucket = args
+    conn, run_tts_upload = args
 
     # parse
     try:
@@ -34,29 +57,14 @@ def process_arxiv(ch, method, properties, body, args):
             return
 
     # text2speech
-    filename = article.safe_id() + ".mp3"
-    filepath = dirpath / filename
-
-    if not os.path.exists(filepath):
-        try:
-            sentences = text_util.split_sentences(article.summary)
-            # in dev, only use title to keep processing time low
-            if production:
-                sentences = [article.title] + sentences
-            else:
-                sentences = [article.title]
-            tts.generate(sentences, filepath)
-
-        except Exception as e:
-            log.warning(e)
-            ch.basic_ack(delivery_tag = method.delivery_tag)
-            return
-
-    # upload audio to object store
     try:
-        s3.upload_file(filepath, s3_bucket, filename)
+        filepath = run_tts_upload(article)
     except ClientError as e:
         log.error(e)
+        return
+    except Exception as e:
+        log.warning(e)
+        ch.basic_ack(delivery_tag = method.delivery_tag)
         return
 
     if os.path.exists(filepath):
@@ -116,7 +124,10 @@ def process(production=False):
     with psycopg.connect(database_url) as conn:
 
         # Execute
-        args = (conn, production, WORK_DIR, text_util, tts, s3, s3_bucket)
+        run_tts_upload = functools.partial(
+                tts_upload, tts=tts, text_util=text_util, workdir=WORK_DIR,
+                production=production, s3=s3, s3_bucket=s3_bucket)
+        args = (conn, run_tts_upload)
         callback = functools.partial(process_arxiv, args=args)
         channel.basic_consume(ARXIV_QUEUE_NAME, callback, auto_ack=False)
 
