@@ -8,6 +8,16 @@
 </head>
 <body>
 
+  <script>
+    function pause_currently_playing(evt) {
+      if(window.$_currentlyPlaying && window.$_currentlyPlaying != evt.target) {
+        window.$_currentlyPlaying.pause()
+      }
+      window.$_currentlyPlaying = evt.target
+    }
+    window.addEventListener("play", pause_currently_playing, true);
+  </script>
+
   <main>
   {% for article in articles %}
   <article data-aid="{{ article.id }}">
