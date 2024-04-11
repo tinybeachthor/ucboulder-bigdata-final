@@ -1,13 +1,17 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, jsonify, render_template
 from prometheus_client import Counter, Summary, generate_latest
 import os
 import psycopg
 
-from components.database import get_arxiv_latest
+from components.database import get_arxiv_latest, get_arxiv_after
 from models.article import Article
 
 index_view_metric = Counter('index', 'GET index')
 index_duration = Summary('index_duration', 'GET index duration')
+api_latest_metric = Counter('latest', 'GET /api/latest')
+api_latest_duration = Summary('latest_duration', 'GET /api/latest duration')
+api_after_metric = Counter('after', 'GET /api/after')
+api_after_duration = Summary('after_duration', 'GET /api/after duration')
 
 def create_app():
     database_url = os.environ.get(
@@ -33,10 +37,31 @@ def create_app():
 
         return response
 
-    @app.route("/echo_user_input", methods=["POST"])
-    def echo_input():
-        input_text = request.form.get("user_input", "")
-        return "You entered: " + input_text
+    @app.route("/api/latest", methods=["GET"])
+    @api_latest_duration.time()
+    def latest():
+        api_latest_metric.inc()
+
+        with psycopg.connect(database_url) as conn:
+            with conn.cursor() as cur:
+                arxiv = get_arxiv_latest(cur)
+        articles = list(map(lambda a: a.to_article(audio_url_root), arxiv))
+
+        return jsonify(articles)
+
+    @app.route("/api/after", methods=["POST"])
+    @api_after_duration.time()
+    def after():
+        api_after_metric.inc()
+
+        aid = request.json['id']
+
+        with psycopg.connect(database_url) as conn:
+            with conn.cursor() as cur:
+                arxiv = get_arxiv_after(cur, aid)
+        articles = list(map(lambda a: a.to_article(audio_url_root), arxiv))
+
+        return jsonify(articles)
 
     @app.route("/healthz")
     def healthz():
