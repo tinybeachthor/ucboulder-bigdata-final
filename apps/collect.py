@@ -11,7 +11,7 @@ from models.arxiv import Article as ArxivArticle
 
 log = logging.getLogger(__name__)
 
-TWO_HOURS_MINUTES = 2*60
+TWO_DAYS_MINUTES = 2*24*60
 
 def pull_arxiv(client, channel, queue, category, dt_now):
     log.info('pulling arxiv')
@@ -32,10 +32,10 @@ def pull_arxiv(client, channel, queue, category, dt_now):
             log.info(f'got article {r.entry_id}')
             published = r.published.astimezone(tz.UTC)
 
-            # check if older than 2 hours
+            # check if recent enough
             age = (dt_now - published).total_seconds() // 60
             log.info(f'article age {age} minutes')
-            if (age > TWO_HOURS_MINUTES):
+            if (age > TWO_DAYS_MINUTES):
                 return
 
             authors = list(map(str, r.authors))
