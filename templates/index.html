@@ -49,7 +49,7 @@
       el.appendChild(link)
 
       const authors = document.createElement('div')
-      authors.class = 'authors'
+      authors.className = 'authors'
       for (a of article.authors) {
         const author = document.createElement('span')
         author.innerHTML = a + ";"
@@ -58,7 +58,7 @@
       el.appendChild(authors)
 
       const summary = document.createElement('div')
-      summary.class = 'summary'
+      summary.className = 'summary'
       summary.innerHTML = article.summary
       el.appendChild(summary)
 
