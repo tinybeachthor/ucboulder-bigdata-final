@@ -7,16 +7,17 @@ The application collects data from a public API, transforms the data
 the Internet in the form of a website or through a REST API as a JSON
 document.
 
-The application loads recent research papers from [https://arxiv.org/](https://arxiv.org/).
-It generates audio of the summary of the paper.
-It then information about the paper and the generated audio version on a
-website.
-
-## Repository URL
-
-[https://github.com/tinybeachthor/ucboulder-bigdata-final](https://github.com/tinybeachthor/ucboulder-bigdata-final)
+The application provides an audio version of recent research papers.
+It watches for new research papers on [https://arxiv.org/](https://arxiv.org/),
+generates audio of the summary of the paper, and then stores the information
+about the paper and the generated audio version.
+This data is accessible using a public website at the following URL.
 
 ## Public URL
 
 [https://ucboulder-bigdata-final-da5143962440.herokuapp.com/](https://ucboulder-bigdata-final-da5143962440.herokuapp.com/)
+
+## Repository URL
+
+[https://github.com/tinybeachthor/ucboulder-bigdata-final](https://github.com/tinybeachthor/ucboulder-bigdata-final)
 
