@@ -46,3 +46,30 @@ def get_arxiv_latest(cur, limit=10):
             log.warning(e)
 
     return articles
+
+def get_arxiv_after(cur, aid, limit=10):
+    cur.execute(
+        "select * from ARXIV \
+            where published < (\
+                select published from ARXIV \
+                    where id = %s) \
+            order by published desc \
+            limit %s",
+            (aid,limit))
+    rows = cur.fetchall()
+
+    articles = []
+    for row in rows:
+        try:
+            authors = row[3].split('; ')
+            article = ArxivArticle(
+                row[0],
+                row[1],
+                row[2],
+                authors,
+                row[4])
+            articles.append(article)
+        except Exception as e:
+            log.warning(e)
+
+    return articles
