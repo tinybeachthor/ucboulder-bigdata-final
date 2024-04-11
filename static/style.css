@@ -9,7 +9,7 @@ body {
 }
 
 article {
-  margin-bottom: 2rem;
+  margin-bottom: 4rem;
 }
 article > h2 {
   margin: 0;
@@ -22,4 +22,8 @@ article > .authors {
 }
 article > .summary {
   max-width: 960px;
+}
+
+figure {
+  margin: 1rem 0;
 }
