@@ -40,6 +40,11 @@ Cloudflare R2 which allows direct public access through a CDN network.
 
 ## Rest collaboration or API endpoint
 
+The web server (`apps/web.py`) also exposes a REST API endpoint. This
+API is used to handle a 'load more' request from the website to load
+older articles. The API is also publicly accessible and can be used for
+programmatic access to the service.
+
 ## Product environment
 
 Production deployment in Heroku. Using `docker-compose` to create a
