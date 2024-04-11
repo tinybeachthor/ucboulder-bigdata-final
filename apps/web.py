@@ -4,6 +4,7 @@ import os
 import psycopg
 
 from components.database import get_arxiv_latest
+from models.article import Article
 
 index_view_metric = Counter('index', 'GET index')
 index_duration = Summary('index_duration', 'GET index duration')
@@ -23,11 +24,11 @@ def create_app():
 
         with psycopg.connect(database_url) as conn:
             with conn.cursor() as cur:
-                articles = get_arxiv_latest(cur)
+                arxiv = get_arxiv_latest(cur)
+        articles = list(map(lambda a: a.to_article(audio_url_root), arxiv))
 
         response = render_template(
                 'index.html',
-                AUDIO_URL_ROOT = audio_url_root,
                 articles = articles)
 
         return response

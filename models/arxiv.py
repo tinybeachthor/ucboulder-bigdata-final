@@ -4,6 +4,8 @@ from datetime import datetime
 import json
 from enum import StrEnum
 
+from .article import Article as OutputArticle
+
 @dataclass
 class Article:
     id: str
@@ -26,3 +28,12 @@ class Article:
 
     def safe_id(self):
         return "".join([ c if c.isalnum() else "_" for c in self.id ])
+
+    def to_article(self, audio_url_root):
+        return OutputArticle(
+                self.id,
+                self.id,
+                self.title,
+                self.authors,
+                self.summary,
+                audio_url_root+self.safe_id()+".mp3")

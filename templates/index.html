@@ -11,9 +11,11 @@
   {% for article in articles %}
   <article>
     <figure>
-      <audio controls src="{{AUDIO_URL_ROOT}}{{article.safe_id()}}.mp3"></audio>
+      <audio controls src="{{ article.audio_url }}"></audio>
     </figure>
-    <h2>{{ article.title }}</h2>
+    <a href="{{ article.link }}">
+      <h2>{{ article.title }}</h2>
+    </a>
     <div class="authors">
       {% for author in article.authors %}
       <span>{{ author }};</span>
