@@ -1,4 +1,4 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from typing import List
 
 @dataclass
@@ -9,8 +9,3 @@ class Article:
     authors: List[str]
     summary: str
     audio_url: str
-
-    def toJSON(self):
-        d = asdict(self)
-        j = json.dumps(d)
-        return j
